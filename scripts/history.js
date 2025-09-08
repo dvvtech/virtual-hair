@@ -1,6 +1,6 @@
 async function showExample() {
 
-    showHistoryWithUrl(`${API_BASE_URL}/api/virtual-fit/examples`, { authenticated: false });
+    showHistoryWithUrl(`${API_BASE_URL}/api/virtual-hair/examples`, { authenticated: false });
     document.getElementById('fittingResultTitle').textContent = 'Examples';
 }
 
