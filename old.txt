@@ -1,0 +1,71 @@
+
+1. try on
+/*if (!response.ok) {
+                try {
+                    // Пытаемся прочитать тело ответа как JSON
+                    const err = response.json().catch(() => null);
+
+                    if (response.status === 401) {
+                        throw new Error('Не авторизован. Пожалуйста, войдите в систему.');
+                    } else {
+                        throw new Error(err?.description || `Ошибка сервера: ${response.status} ${response.statusText}`);
+                    }
+                } catch (e) {
+                    // Если не удалось распарсить JSON, используем стандартное сообщение
+                    if (response.status === 401) {
+                        throw new Error('Не авторизован. Пожалуйста, войдите в систему.');
+                    } else {
+                        throw new Error(`Ошибка сервера: ${response.status} ${response.statusText}`);
+                    }
+                }
+            }
+            return response.json();
+        
+
+        .then(data => {
+            window.resultUrl = data.url; // Save the result URL
+            localStorage.setItem('promoCode', promoCodeField); // Save promo code on success
+            document.getElementById('overlay').classList.add('hidden');
+            showResult(window.humanPhotoUrl, window.garmPhotoUrl, data.url);
+            document.getElementById('remainingUsageContainer').style.display = 'block';
+            document.getElementById('remainingUsage').textContent = data.remainingUsage;
+            localStorage.setItem('remainingUsage', data.remainingUsage);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('overlay').classList.add('hidden');
+
+            // Очищаем предыдущие сообщения об ошибках
+            const existingErrors = document.querySelectorAll('.error-message');
+            existingErrors.forEach(el => el.remove());
+
+            // Display error message to user
+            const errorMessage = document.createElement('div');
+            errorMessage.textContent = error.message;
+            errorMessage.className = 'text-red-600 text-center mt-4 error-message';
+            mainContent.appendChild(errorMessage);
+        });*/
+
+2.
+        /*function replaceEndingToV(input, findStr) {
+            // Находим последнюю точку в строке
+            const lastDotIndex = input.lastIndexOf('.');
+
+            // Проверяем, есть ли расширение файла
+            if (lastDotIndex !== -1) {
+                // Отбрасываем расширение файла
+                const baseName = input.substring(0, lastDotIndex);
+                const extension = input.substring(lastDotIndex);
+
+                // Проверяем, заканчивается ли строка на "_r"
+                if (baseName.endsWith(findStr)) { //"_r"
+                    // Заменяем "_r" на "_v"
+                    const newBaseName = baseName.slice(0, -2) + "_v";
+                    // Возвращаем новую строку с расширением
+                    return newBaseName + extension;
+                }
+            }
+
+            // Если строка не заканчивается на "_r" или нет расширения, возвращаем исходную строку
+            return input;
+        }*/

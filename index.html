@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Fitting Room</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/clothingCollection.js"></script>
+    <script src="scripts/history.js"></script>
+    <script src="scripts/busyindicator.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/profile.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 min-h-screen flex items-center justify-center">
+    <div id="mainContent" class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md">
+        <div class="flex gap-4 mb-6"> <!-- Добавляем контейнер с flex и отступом -->
+            <button id="historyButton"
+                class="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:from-gray-600 hover:to-gray-700 transition shadow-md hover:shadow-lg"
+                onclick="showHistory()">History</button>
+
+            <button id="profileButton"
+                class="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:from-gray-600 hover:to-gray-700 transition shadow-md hover:shadow-lg"
+                onclick="showProfile()">Profile</button>
+
+            <!--<button id="exampleButton"
+                class="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:from-gray-600 hover:to-gray-700 transition shadow-md hover:shadow-lg"
+                onclick="showExample()">Examples</button>-->
+        </div>
+
+        <h1 class="text-3xl font-bold mb-6 text-gray-900 text-center">Virtual fitting</h1>
+
+        <div id="startHeader">
+
+            <p class="welcome-text">
+                Welcome to our online fitting room! Here you can try on clothes virtually.
+            </p>
+
+            <div class="highlight">
+                <span class="emoji">🎉</span> Try it for free! You get <strong>3 free fittings per day</strong> — mix
+                and
+                match outfits to find your perfect style.
+            </div>
+
+            <p>Want more? Just sign in!</p>
+
+        </div>
+
+        <div id="mainDiv">
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                <!-- Photo Upload 1 -->
+                <div class="relative group mb-2">
+                    <input type="file" accept="image/*" id="humanFile" class="hidden"
+                        onchange="previewImage(event, 'humanPreview')">
+                    <label for="humanFile"
+                        class="w-full h-40 border-2 border-dashed border-gray-300 flex items-center justify-center rounded-lg cursor-pointer transition group-hover:border-gray-400 group-hover:shadow-md">
+                        <span class="text-sm text-gray-500 group-hover:text-gray-700 text-center">Upload your photo</span>
+                    </label>
+                    <img id="humanPreview" src="" alt=""
+                        class="absolute inset-0 w-full h-40 object-contain rounded-lg hidden"
+                        onclick="document.getElementById('humanFile').click()">
+                    <button class="bg-blue-500 text-white text-xs font-semibold py-1 px-3 rounded-lg mt-2 w-full"
+                        onclick="openCollection(event, 'humanPreview')">Photo from the collection</button>
+                </div>
+
+                <!-- Photo Upload 2 -->
+                <div class="relative group mb-2">
+                    <input type="file" accept="image/*" id="garmFile" class="hidden"
+                        onchange="previewImage(event, 'garmPreview')">
+                    <label for="garmFile"
+                        class="w-full h-40 border-2 border-dashed border-gray-300 flex items-center justify-center rounded-lg cursor-pointer transition group-hover:border-gray-400 group-hover:shadow-md">
+                        <span class="text-sm text-gray-500 group-hover:text-gray-700 text-center">Upload photo of clothes</span>
+                    </label>
+                    <img id="garmPreview" src="" alt=""
+                        class="absolute inset-0 w-full h-40 object-contain rounded-lg hidden"
+                        onclick="document.getElementById('garmFile').click()">
+                    <button class="bg-blue-500 text-white text-xs font-semibold py-1 px-3 rounded-lg mt-2 w-full"
+                        onclick="openCollection(event, 'garmPreview')">Photo from the collection</button>
+                </div>
+            </div>
+
+            <!-- Dropdown -->
+            <div class="mb-4">
+                <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Select Category</label>
+                <select id="category"
+                    class="w-full border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="upper_body">Upper</option>
+                    <option value="lower_body">Lower</option>
+                    <option value="dresses">Dresses</option>
+                </select>
+            </div>
+
+        </div>
+
+        
+        <div class="flex gap-4 mb-6" style="margin-left: 70px; margin-top: 35px;">
+            <button class="font-semibold py-3 px-6 rounded-lg try-on hover:from-blue-600 hover:to-blue-700 transition shadow-md hover:shadow-lg"
+                 id="tryOnButton" 
+                 onclick="tryOn()">Try On</button>
+            <button class="font-semibold py-3 px-6 rounded-lg logout hover:from-blue-600 hover:to-blue-700 transition shadow-md hover:shadow-lg"
+                id="logoutBtn"
+                onclick="tryLogout()">Log out</button>
+        </div>
+        
+        <!--<div id="authButtons">-->
+        <div class="social-buttons-row mt-6" id="authButtons">
+
+            <button class="vk-auth-button" onclick="tryVkAuth()">
+                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M4.54648 4.54648C3 6.09295 3 8.58197 3 13.56V14.44C3 19.418 3 21.907 4.54648 23.4535C6.09295 25 8.58197 25 13.56 25H14.44C19.418 25 21.907 25 23.4535 23.4535C25 21.907 25 19.418 25 14.44V13.56C25 8.58197 25 6.09295 23.4535 4.54648C21.907 3 19.418 3 14.44 3H13.56C8.58197 3 6.09295 3 4.54648 4.54648ZM6.79999 10.15C6.91798 15.8728 9.92951 19.31 14.8932 19.31H15.1812V16.05C16.989 16.2332 18.3371 17.5682 18.8875 19.31H21.4939C20.7869 16.7044 18.9535 15.2604 17.8141 14.71C18.9526 14.0293 20.5641 12.3893 20.9436 10.15H18.5722C18.0747 11.971 16.5945 13.6233 15.1803 13.78V10.15H12.7711V16.5C11.305 16.1337 9.39237 14.3538 9.314 10.15H6.79999Z"
+                        fill="white" />
+                </svg>
+            </button>
+
+            <button class="google-auth-button" onclick="tryGoogleAuth()">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        fill="#4285F4" />
+                    <path
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        fill="#34A853" />
+                    <path
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        fill="#FBBC05" />
+                    <path
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        fill="#EA4335" />
+                </svg>
+            </button>
+
+            <button class="yandex-auth-button" onclick="tryYandexAuth()">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M2.04 12c0-5.523 4.476-10 10-10 5.522 0 10 4.477 10 10s-4.478 10-10 10c-5.524 0-10-4.477-10-10z"
+                        fill="#FC3F1D" />
+                    <path
+                        d="M13.32 7.666h-.924c-1.694 0-2.585.858-2.585 2.123 0 1.43.616 2.1 1.881 2.959l1.149.826-4.409 4.926H5.328l3.226-3.708c-2.013-1.517-3.038-2.875-3.038-4.85 0-2.288 1.595-4.05 4.62-4.05h3.98v15.332h-2.196V7.666z"
+                        fill="#fff" />
+                </svg>
+            </button>
+
+            <button class="mailru-auth-button" onclick="tryMailRuAuth()">
+                <div class="mailru-logo">
+                    <span class="mailru-at">@</span>
+                    <span class="mailru-text">mail</span>
+                </div>
+            </button>
+
+        </div>
+
+        <!--<center>
+            <button class="email-btn">Or register with email</button>
+        </center>-->
+
+        <center>
+            <div id="exampleButton">
+                <a href="#" class="examples-btn" onclick="showExample()">
+                    <span class="emoji">🔍</span> Outfit Examples
+                </a>
+
+                <p>Start styling now and create your perfect look in just a few clicks!
+                    <span class="emoji">👗</span>
+                    <span class="emoji">👔</span>
+                    <span class="emoji">👟</span>
+                </p>
+            </div>
+        </center>
+
+    </div>
+
+    <div id="resultViewer"
+        class="hidden fixed inset-0 bg-black text-white flex flex-col items-center justify-center z-50">
+        <img id="resultImage" src="" alt="Result" class="max-w-full max-h-screen">
+
+        <!-- Кнопки навигации -->
+        <!--<button id="prevButton" onclick="prevImg()"
+            class="absolute left-4 p-2 rounded-full z-50 hover:bg-gray-700 opacity-70 hover:opacity-100 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <button id="nextButton" onclick="nextImg()"
+            class="absolute right-4 p-2 rounded-full z-50 hover:bg-gray-700 opacity-70 hover:opacity-100 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>-->
+
+        <div class="absolute bottom-10 flex gap-4 bottom-buttons">
+            <button class="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Your photo</button>
+            <button class="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Photo of clothes</button>
+            <button class="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Fitting result</button>
+        </div>
+
+        <!-- Кнопка Share -->
+        <button id="shareButton"
+            class="absolute top-3 left-4 p-2 rounded-full z-50 hover:opacity-80 transition-opacity">
+            <img src="share.png" alt="Share">
+        </button>
+
+        <!-- Кнопка Close -->
+        <button class="absolute top-3 right-4 p-2 rounded-full z-50" onclick="closeResult()" title="Close">
+            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 122.88"
+                class="w-11 h-11">
+                <defs>
+                    <style>
+                        .cls-1 {
+                            fill: #f44336;
+                            fill-rule: evenodd;
+                        }
+
+                        button:hover .cls-1 {
+                            fill: #e53935;
+                            /* Изменение цвета при наведении */
+                        }
+                    </style>
+                </defs>
+                <title>close-red</title>
+                <path class="cls-1"
+                    d="M61.44,0A61.44,61.44,0,1,1,0,61.44,61.44,61.44,0,0,1,61.44,0ZM74.58,36.8c1.74-1.77,2.83-3.18,5-1l7,7.13c2.29,2.26,2.17,3.58,0,5.69L73.33,61.83,86.08,74.58c1.77,1.74,3.18,2.83,1,5l-7.13,7c-2.26,2.29-3.58,2.17-5.68,0L61.44,73.72,48.63,86.53c-2.1,2.15-3.42,2.27-5.68,0l-7.13-7c-2.2-2.15-.79-3.24,1-5l12.73-12.7L36.35,48.64c-2.15-2.11-2.27-3.43,0-5.69l7-7.13c2.15-2.2,3.24-.79,5,1L61.44,49.94,74.58,36.8Z" />
+            </svg>
+        </button>
+
+    </div>
+
+    <!-- Busy indicator with optional countdown -->
+    <div id="overlay" class="fixed inset-0 bg-white bg-opacity-80 hidden flex items-center justify-center z-50">
+        <div class="flex flex-col items-center">
+            <div class="h-16 w-16 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+            <div id="countdown-container" class="mt-4 text-lg font-semibold text-gray-700 hidden">
+                Please wait... <span id="countdown-number">37</span>s
+            </div>
+            <div id="progress-bar-container" class="mt-2 w-64 bg-gray-200 rounded-full h-2.5 hidden">
+                <div id="progress" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // Извлекаем токены из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('accessToken');
+        const refreshToken = urlParams.get('refreshToken');
+
+        if (accessToken && refreshToken) {
+
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+
+            //Очищаем URL от токенов (без перезагрузки)
+            urlParams.delete('accessToken');
+            urlParams.delete('refreshToken');
+
+            // Формируем новый URL
+            const newUrl = urlParams.toString()
+                ? `${window.location.pathname}?${urlParams.toString()}`
+                : window.location.pathname;
+
+            window.history.replaceState({}, '', newUrl);
+            //вывести сообщение чтоб авторизация прошла успешно
+            //showAuthSuccess();
+        }
+
+        //'https://a30944-8332.x.d-f.pw';
+        const API_BASE_URL = 'https://a33140-9deb.k.d-f.pw';
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+
+        document.addEventListener('DOMContentLoaded', async () => {
+
+            checkAuthState();
+
+            //document.getElementById('yandexAuthBtn').addEventListener('click', tryYandexAuth);
+
+            document.getElementById('resultImage').addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+
+            document.getElementById('resultImage').addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+        });
+
+        function handleSwipe() {
+            const threshold = 50; // минимальное расстояние для свайпа
+
+            if (touchEndX < touchStartX - threshold) {
+                // Свайп влево - следующее изображение
+                //document.getElementById('nextButton').click();
+                nextImg();
+            } else if (touchEndX > touchStartX + threshold) {
+                // Свайп вправо - предыдущее изображение
+                //document.getElementById('prevButton').click();
+                prevImg();
+            }
+        }
+
+        const shareButton = document.getElementById('shareButton');
+        // Обработчик для кнопки "Поделиться"
+        shareButton.onclick = () => {
+            const resultImage = document.getElementById('resultImage');
+            if (navigator.share) {
+                try {
+                    navigator.share({
+                        title: 'Virtual Fit',
+                        text: 'Попробуй примерить одежду онлайн!',
+                        url: resultImage.src
+                    });
+                    console.log('Контент успешно поделён!');
+                } catch (error) {
+                    console.error('Ошибка при попытке поделиться:', error);
+                }
+            } else {
+                //alert('Ваш браузер не поддерживает Web Share API');
+                navigator.clipboard.writeText(resultImage.src)
+                    .then(() => {
+                        //alert("Ссылка на изображение скопирована в буфер обмена!");
+                    })
+                    .catch(err => {
+                        console.error("Ошибка при копировании ссылки: ", err);
+                        //alert("Не удалось скопировать ссылку.");
+                    });
+            }//end else            
+        };
+
+        function showAuthSuccess() {
+            const toast = document.createElement('div');
+            toast.innerHTML = `
+        <div class="toast-success">
+            <svg>...</svg>
+            <p>Авторизация прошла успешно!</p>
+        </div>
+    `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Вспомогательные функции
+        function isUserAuthenticated() {
+            return localStorage.getItem('accessToken') !== null;
+        }
+
+        /*function showAuthSuccess() {
+            const toast = document.getElementById('authSuccessToast');
+ 
+            // Показываем сообщение
+            toast.classList.remove('hidden');
+            toast.classList.add('toast-animation');
+ 
+            // Убираем через 3 секунды
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('toast-animation');
+            }, 3000);
+        }*/
+
+    </script>
+
+    <div id="historyContent" class="hidden bg-white p-8 rounded-xl shadow-2xl w-full max-w-5xl relative">
+        <!-- Sticky header с отступом сверху -->
+        <div class="sticky top-2 bg-white pb-6 z-10">
+            <div class="flex justify-between items-center">
+                <h2 id="fittingResultTitle" class="text-2xl font-bold text-gray-900">Fitting History</h2>
+                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    onclick="hideHistory()">Back</button>
+            </div>
+        </div>
+
+        <!-- Таблица с отступом сверху -->
+        <div class="overflow-auto mt-6" style="max-height: calc(100vh - 200px);">
+            <table class="table-auto w-full border-collapse">
+                <thead>
+                    <tr class="relative"> <!-- Добавлен relative для псевдоэлемента -->
+                        <th class="sticky top-0 bg-gray-100 z-20 p-2 text-gray-800 border-b-2 border-gray-300">Your
+                            photo</th>
+                        <th class="sticky top-0 bg-gray-100 z-20 p-2 text-gray-800 border-b-2 border-gray-300">
+                            Clothes
+                            photo</th>
+                        <th class="sticky top-0 bg-gray-100 z-20 p-2 text-gray-800 border-b-2 border-gray-300">
+                            Result
+                        </th>
+                        <!-- Псевдоэлемент для перекрытия артефактов -->
+                        <div class="absolute -top-px left-0 right-0 h-px bg-gray-100"></div>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody" class="border-t border-gray-200"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="collectionModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-3/4 max-w-4xl">
+            <h2 class="text-xl font-bold mb-4">Select from Collection</h2>
+            <div class="flex border-b mb-4">
+                <button id="tabMan" class="tab-button bg-gray-200 px-4 py-2 rounded-t active"
+                    onclick="showTab('man')">Man</button>
+                <button id="tabWoman" class="tab-button bg-gray-200 px-4 py-2 rounded-t"
+                    onclick="showTab('woman')">Woman</button>
+            </div>
+            <div id="collectionGridMan" class="collection-grid grid grid-cols-3 gap-4 overflow-y-auto max-h-96"
+                style="-webkit-overflow-scrolling: touch;"></div>
+            <div id="collectionGridWoman" class="collection-grid hidden grid grid-cols-3 gap-4 overflow-y-auto max-h-96"
+                style="-webkit-overflow-scrolling: touch;"></div>
+            <button class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                onclick="closeCollection()">Close</button>
+        </div>
+    </div>
+
+    <div id="authSuccessToast" class="fixed inset-0 flex items-center justify-center pointer-events-none hidden z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 flex flex-col items-center max-w-sm mx-4">
+            <svg class="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <p class="text-gray-800 text-lg font-medium text-center">Авторизация прошла успешно!</p>
+        </div>
+    </div>
+
+    <!-- Блок с информацией о пользователе -->
+    <div id="profileContent" class="hidden space-y-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+
+        <!-- Заголовок с кнопкой Back (выравнивание по правому краю) -->
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-semibold text-gray-700">Профиль</h3>
+            <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition" onclick="hideProfile()">
+                Back
+            </button>
+        </div>
+
+        <div class="flex justify-between">
+            <span class="text-gray-600 font-medium">Имя:</span>
+            <span id="userName" class="text-gray-800">—</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-600 font-medium">Почта:</span>
+            <span id="userEmail" class="text-gray-800">—</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-600 font-medium">Примерок сегодня:</span>
+            <span id="fittingsToday" class="text-gray-800">—</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-600 font-medium">Всего примерок:</span>
+            <span id="totalFittings" class="text-gray-800">—</span>
+        </div>
+        <div class="flex justify-between">
+            <span class="text-gray-600 font-medium">Дата последней примерки:</span>
+            <span id="lastFittingDate" class="text-gray-800">—</span>
+        </div>
+    </div>
+
+
+</body>
+
+</html>
