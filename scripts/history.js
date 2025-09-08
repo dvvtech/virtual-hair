@@ -48,7 +48,7 @@ async function showHistoryWithUrl(url, { authenticated = true } = {}) {
         data.forEach(item => {
             const row = document.createElement('tr');
 
-            [item.faceImgUrl, item.hairImgImgUrl, item.resultImgUrl].forEach(imgUrl => {
+            [item.faceImgUrl, item.hairImgUrl, item.resultImgUrl].forEach(imgUrl => {
                 const cell = document.createElement('td');
                 cell.className = 'border border-gray-200 p-0.5';
 
