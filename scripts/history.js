@@ -55,7 +55,7 @@ async function showHistoryWithUrl(url, { authenticated = true } = {}) {
                 const img = document.createElement('img');
                 img.src = imgUrl;
                 img.className = 'w-full h-40 object-contain cursor-pointer';
-                img.onclick = () => showImageFullScreen(imgUrl, item.faceImgUrl, item.hairImgUrl, item.resultImgUrl);
+                img.onclick = () => showImageFullScreen(imgUrl, item.hairImgUrl, item.faceImgUrl, item.resultImgUrl);
 
                 cell.appendChild(img);
                 row.appendChild(cell);
