@@ -48,14 +48,14 @@ async function showHistoryWithUrl(url, { authenticated = true } = {}) {
         data.forEach(item => {
             const row = document.createElement('tr');
 
-            [item.humanImgUrl, item.garmentImgUrl, item.resultImgUrl].forEach(imgUrl => {
+            [item.faceImgUrl, item.hairImgImgUrl, item.resultImgUrl].forEach(imgUrl => {
                 const cell = document.createElement('td');
                 cell.className = 'border border-gray-200 p-0.5';
 
                 const img = document.createElement('img');
                 img.src = imgUrl;
                 img.className = 'w-full h-40 object-contain cursor-pointer';
-                img.onclick = () => showImageFullScreen(imgUrl, item.humanImgUrl, item.garmentImgUrl, item.resultImgUrl);
+                img.onclick = () => showImageFullScreen(imgUrl, item.faceImgUrl, item.hairImgImgUrl, item.resultImgUrl);
 
                 cell.appendChild(img);
                 row.appendChild(cell);
