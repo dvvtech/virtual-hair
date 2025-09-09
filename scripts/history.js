@@ -6,7 +6,7 @@ async function showExample() {
 
 async function showHistory() {
 
-    showHistoryWithUrl(`${API_BASE_URL}/api/virtual-fit/history`);
+    showHistoryWithUrl(`${API_BASE_URL}/api/virtual-hair/history`);
     document.getElementById('fittingResultTitle').textContent = 'Fitting History';
 }
 
@@ -112,7 +112,7 @@ async function deleteRow(row, itemId) {
 
     try {
 
-        const response = await makeAuthenticatedRequest(`${API_BASE_URL}/api/virtual-fit/history`, {
+        const response = await makeAuthenticatedRequest(`${API_BASE_URL}/api/virtual-hair/history`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

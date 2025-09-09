@@ -104,7 +104,7 @@ async function tryOn() {
 
     try {
 
-        const response = await makeAuthenticatedRequest(`${API_BASE_URL}/api/virtual-fit/try-on`, {
+        const response = await makeAuthenticatedRequest(`${API_BASE_URL}/api/virtual-hair/try-on`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
