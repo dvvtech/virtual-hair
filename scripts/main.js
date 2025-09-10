@@ -95,8 +95,8 @@ async function tryOn() {
     existingErrors.forEach(error => error.remove());
 
     const payload = {
-        faceImg: window.garmPhotoUrl,
-        hairImg: window.humanPhotoUrl        
+        faceImg: window.humanPhotoUrl,
+        hairImg: window.garmPhotoUrl        
     };
 
     try {
