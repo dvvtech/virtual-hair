@@ -94,12 +94,9 @@ async function tryOn() {
     const existingErrors = mainContent.querySelectorAll('.error-message');
     existingErrors.forEach(error => error.remove());
 
-    const cat = document.getElementById('category').value;
-
     const payload = {
-        garmImg: window.garmPhotoUrl,
-        humanImg: window.humanPhotoUrl,
-        category: cat
+        faceImg: window.garmPhotoUrl,
+        hairImg: window.humanPhotoUrl        
     };
 
     try {
