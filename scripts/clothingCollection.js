@@ -16,7 +16,7 @@ async function openCollection(event, previewId) {
 
     try {
 
-        const response = await makeAuthenticatedRequest(`${API_BASE_URL}/api/clothing`, {
+        const response = await makeAuthenticatedRequest(`${API_BASE_URL}/api/hair`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -27,17 +27,7 @@ async function openCollection(event, previewId) {
             throw new Error(err.description || 'Failed to delete item');                                          
         }
 
-        const data = await response.json();
-        if (previewId === "garmPreview") {
-            data.manСlothingItems.forEach(item => {
-                const img = document.createElement('img');
-                img.src = item.link;
-                img.alt = item.category;
-                img.className = 'w-full h-40 object-contain rounded cursor-pointer hover:opacity-75';
-                img.onclick = () => selectFromCollection(item.link, previewId);
-                collectionGridMan.appendChild(img);
-            });
-        }
+        const data = await response.json();        
         data.man.forEach(item => {
             const img = document.createElement('img');
             img.src = item.link;
@@ -47,16 +37,6 @@ async function openCollection(event, previewId) {
             collectionGridMan.appendChild(img);
         });
 
-        if (previewId === "garmPreview") {
-            data.womanСlothingItems.forEach(item => {
-                const img = document.createElement('img');
-                img.src = item.link;
-                img.alt = item.category;
-                img.className = 'w-full h-40 object-contain rounded cursor-pointer hover:opacity-75';
-                img.onclick = () => selectFromCollection(item.link, previewId);
-                collectionGridWoman.appendChild(img);
-            });
-        }
         data.woman.forEach(item => {
             const img = document.createElement('img');
             img.src = item.link;
